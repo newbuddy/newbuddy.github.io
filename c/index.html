@@ -67,14 +67,17 @@
     document.getElementById('bad').style.display = 'block';
   } else {
     var from = (q.get('n') || 'A friend').slice(0, 24);
+    // Sender's country (ISO code), signed into the link by newer versions of the game.
+    var cc = /^[A-Z]{2}$/.test(q.get('c') || '') ? q.get('c') : '';
+    var flag = cc ? String.fromCodePoint.apply(null, cc.split('').map(function (ch) { return 0x1f1e6 + ch.charCodeAt(0) - 65; })) : '';
     var stage = Number(m[2]);
-    document.getElementById('from').textContent = from + ' challenges you!';
+    document.getElementById('from').textContent = from + (flag ? ' ' + flag : '') + ' challenges you!';
     document.getElementById('stage').textContent = 'STAGE ' + (stage + 1);
     document.getElementById('stageName').textContent = STAGES[stage % STAGES.length];
     document.getElementById('score').textContent = Number(m[3]).toLocaleString() + ' PTS';
     document.getElementById('meters').textContent = '· ' + Number(m[4]).toLocaleString() + ' m';
     // Opens the game directly when it's installed.
-    document.getElementById('open').href = 'tunnelrider://challenge/' + d + '/' + encodeURIComponent(from);
+    document.getElementById('open').href = 'tunnelrider://challenge/' + d + '/' + encodeURIComponent(from) + (cc ? '?c=' + cc : '');
   }
 </script>
 </body>
